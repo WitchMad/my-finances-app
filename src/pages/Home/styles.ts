@@ -18,12 +18,18 @@ const heightPercentageToDP = (heightPercent: string) => {
   );
 };
 
+export const SafeAreaView = styled.SafeAreaView`
+  background: ${(props) =>
+    props.theme.title === 'light' ? props.theme.colors.primary : '#444'};
+`;
 export const Container = styled.View`
   background: ${(props) =>
     props.theme.title === 'light' ? props.theme.colors.primary : '#444'};
   padding: 10px;
-  justify-content: flex-start;
-  align-items: center;
+`;
+
+export const ScrollContainer = styled.ScrollView`
+  height: ${heightPercentageToDP('65%')};
 `;
 
 export const Main = styled.View`
@@ -34,6 +40,7 @@ export const Main = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
+  margin-bottom: 10px;
 `;
 
 export const MainIcon = styled(Icon).attrs({
@@ -131,22 +138,21 @@ export const GridTitle = styled.Text`
   border: 1px solid #eee;
   background: #f9f9f9;
   color: #888;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 900;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   text-align: center;
 `;
 export const GridValueRed = styled.Text`
-  font-size: 22px;
+  font-size: 20px;
   color: #ff4006;
   font-weight: 900;
   text-align: center;
 `;
 export const GridValueGreen = styled.Text`
-  font-size: 22px;
+  font-size: 20px;
   color: #1ad17c;
-  padding: 15px 0px;
   font-weight: 900;
   text-align: center;
 `;
@@ -154,5 +160,4 @@ export const GridValueDescription = styled.Text`
   font-size: 12px;
   color: #999;
   text-align: center;
-  padding-bottom: 20px;
 `;

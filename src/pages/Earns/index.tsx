@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 
 import {KeyboardAvoidingView} from 'react-native';
+
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {
   Container,
@@ -36,8 +38,21 @@ import {
 
 import Modal from '../../components/Modal';
 
+interface IEarn {
+  id: number;
+  value: string;
+  title: string;
+  description?: string;
+  createdAt: Date;
+}
+
 const Earn: React.FC = () => {
   const [openAdd, setOpenAdd] = useState(false);
+  const [values, setValues] = useState({
+    value: '',
+    title: '',
+    description: '',
+  });
   const [detail, setDetail] = useState({
     open: false,
     data: {
@@ -47,6 +62,59 @@ const Earn: React.FC = () => {
       date: '',
     },
   });
+  const [earns, setEarns] = useState<IEarn[]>([]);
+
+  useEffect(() => {
+    async function loadEarns() {
+      try {
+        const items = await AsyncStorage.getItem('earns');
+        if (items) {
+          setEarns(JSON.parse(items));
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    loadEarns();
+  }, []);
+
+  async function handleAdd() {
+    try {
+      const id = Math.random() * 100000000001;
+      const createdAt = new Date();
+      setEarns([
+        ...earns,
+        {
+          id,
+          value: values.value,
+          title: values.title,
+          description: values.description,
+          createdAt,
+        },
+      ]);
+      await AsyncStorage.setItem(
+        'earns',
+        JSON.stringify([
+          ...earns,
+          {
+            id,
+            value: values.value,
+            title: values.title,
+            description: values.description,
+            createdAt,
+          },
+        ]),
+      );
+      setValues({
+        value: '',
+        title: '',
+        description: '',
+      });
+      setOpenAdd(false);
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <Container>
@@ -54,15 +122,31 @@ const Earn: React.FC = () => {
         <ModalContainer>
           <ModalTitle>Adicionar Ganho</ModalTitle>
           <KeyboardAvoidingView>
-            <TextField placeholder="Valor" keyboardType="numeric" />
-            <TextField placeholder="Tĩtulo" autoCorrect />
-            <TextField placeholder="Descrição" multiline autoCorrect />
+            <TextField
+              placeholder="Valor"
+              keyboardType="numeric"
+              value={values.value}
+              onChangeText={(e) => setValues({...values, value: e})}
+            />
+            <TextField
+              placeholder="Tĩtulo"
+              autoCorrect
+              value={values.title}
+              onChangeText={(e) => setValues({...values, title: e})}
+            />
+            <TextField
+              placeholder="Descrição"
+              multiline
+              autoCorrect
+              value={values.description}
+              onChangeText={(e) => setValues({...values, description: e})}
+            />
           </KeyboardAvoidingView>
           <ModalWrapButtons>
             <ModalButtonOutline onPress={() => setOpenAdd(false)}>
               <ModalButtonTextGreen>Cancelar</ModalButtonTextGreen>
             </ModalButtonOutline>
-            <ModalButtonContained>
+            <ModalButtonContained onPress={handleAdd}>
               <ModalButtonTextWhite>Salvar</ModalButtonTextWhite>
             </ModalButtonContained>
           </ModalWrapButtons>
@@ -104,58 +188,7 @@ const Earn: React.FC = () => {
         </MainPrevious>
       </Main>
       <List
-        data={[
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-          {
-            value: '+R$ 140,00',
-            title: 'Recebimento de Salário',
-            description: 'Recebimento de salário da BFC Capital Partners',
-          },
-        ]}
+        data={earns}
         renderItem={({item, index}) => (
           <ListItem
             key={String(index)}
@@ -168,7 +201,7 @@ const Earn: React.FC = () => {
                 },
               })
             }>
-            <ListItemTitle>{item.value}</ListItemTitle>
+            <ListItemTitle>+ R$ {item.value}</ListItemTitle>
             <ListItemView>
               <ListItemDescription>{item.title}</ListItemDescription>
               <ListItemDate>10/10/2020</ListItemDate>

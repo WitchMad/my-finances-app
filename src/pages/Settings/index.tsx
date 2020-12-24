@@ -1,10 +1,18 @@
 import React from 'react';
-import {View} from 'react-native';
 
-// import { Container } from './styles';
+import {Container, ListContainer, ListItem, ListItemText} from './styles';
 
 const Settings: React.FC = () => {
-  return <View />;
+  return (
+    <Container>
+      <ListContainer>
+        <ListItem>
+          <ListItemText>Tema</ListItemText>
+          <ListItemText>Claro</ListItemText>
+        </ListItem>
+      </ListContainer>
+    </Container>
+  );
 };
 
 export default Settings;

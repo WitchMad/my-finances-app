@@ -21,6 +21,7 @@ const heightPercentageToDP = (heightPercent: string) => {
 export const SafeAreaView = styled.SafeAreaView`
   background: ${(props) =>
     props.theme.title === 'light' ? props.theme.colors.primary : '#444'};
+  height: 100%;
 `;
 export const Container = styled.View`
   background: ${(props) =>

@@ -1,7 +1,8 @@
 import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import {StatusBar, AsyncStorage} from 'react-native';
+import {StatusBar} from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 
 import {ThemeProvider} from 'styled-components';
 
